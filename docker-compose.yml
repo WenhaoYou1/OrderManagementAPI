@@ -1,0 +1,70 @@
+version: "3.8"
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:14
+    container_name: pg-taxfile
+    environment:
+      POSTGRES_DB: taxfile_db
+      POSTGRES_USER: javaorderdbapi
+      POSTGRES_PASSWORD: 59fbfd738908c1f6b2dddd57bd67573910de67aac5ef0b15afa1cb9b91bb3b02
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - order-service-network
+    restart: unless-stopped
+
+  # RabbitMQ Message Queue
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    hostname: rabbitmq-host
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - order-service-network
+    restart: unless-stopped
+
+  # Order Service Application
+  order-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: order-service
+    ports:
+      - "9004:9004"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/taxfile_db
+      SPRING_DATASOURCE_USERNAME: javaorderdbapi
+      SPRING_DATASOURCE_PASSWORD: 59fbfd738908c1f6b2dddd57bd67573910de67aac5ef0b15afa1cb9b91bb3b02
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - order-service-network
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+
+volumes:
+  postgres_data:
+    driver: local
+  rabbitmq_data:
+    driver: local
+
+networks:
+  order-service-network:
+    driver: bridge
