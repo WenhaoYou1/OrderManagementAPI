@@ -176,3 +176,7 @@ Run the test script:
 chmod +x test-api.sh
 ./test-api.sh
 ```
+
+## 🙏 Acknowledgement
+
+Big shoutout to [Cursor](https://cursor.com/) for being the vibe coding tool I didn’t know I needed. Not only did it help polish this README, but it also saved me at least 40% of my coding time. It’s can be an essential part of my workflow in the future.
