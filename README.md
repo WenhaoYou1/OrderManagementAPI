@@ -139,8 +139,8 @@ chmod +x mvnw
 ```bash
 docker run --name pg-taxfile \
   -e POSTGRES_DB=taxfile_db \
-  -e POSTGRES_USER=mengtaxapi \
-  -e POSTGRES_PASSWORD=_86BrzBbsS2k_ \
+  -e POSTGRES_USER=javaorderdbapi \
+  -e POSTGRES_PASSWORD=59fbfd738908c1f6b2dddd57bd67573910de67aac5ef0b15afa1cb9b91bb3b02 \
   -p 5433:5432 \
   -d postgres:14
 ```
